@@ -15,4 +15,8 @@
 - Event taxonomy: `<event_1>`, `<event_2>` with params `<param_a>`, `<param_b>`
 - BI views: <2–3 bullets on visuals/insights>
 
+## Broadcast 08302025
+- Seeded registry.yaml
+  
+
 License: MIT

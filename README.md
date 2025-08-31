@@ -3,7 +3,7 @@
 >>Immutable ledger + snapshots
 
 ## What’s inside
-- Purpose: <1–2 lines on the problem it solves>
+- Purpose: Portfolio Tagging System
 - Artifacts: `/playground` (if applicable), `/powerbi`, `/artifacts` (screens/GIFs), `/gtm` (exports), `/ga4`
 - Telemetry: GA4 via GTM (no PII). See Tag Assistant & DebugView screenshots in `/artifacts`.
 

@@ -156,24 +156,21 @@
 
     // ─────────────── README rendering ───────────────
     
-    async function loadReadme() {
+async function loadReadme() {
       try {
         const res = await fetch('README.md', { cache: 'no-store' });
         if (!res.ok) throw new Error('README.md not found');
         const md = await res.text();
         const html = marked.parse(md, { mangle:false, headerIds:true });
-        const el = document.getElementById('readme.md');
-        el.innerHTML = html;
-        el.setAttribute('aria-busy','false');
+        document.getElementById('readme-md').innerHTML = html;
         track('readme_rendered', { ok: true });
-        
       } catch (err) {
-        const el = document.getElementById('readme.md');
-        el.innerHTML = '<p>Could not load <code>README.md</code>. Ensure it exists at the repo root.</p>';
-        el.setAttribute('aria-busy','false');
+        document.getElementById('readme-md').innerHTML = '<p>Could not load <code>README.md</code>. Ensure it exists at the repo root.</p>';
         track('readme_rendered', { ok: false, message: String(err) });
       }
     }
+
+
 
     // ─────────────── Page init ───────────────
     function initMeta() {

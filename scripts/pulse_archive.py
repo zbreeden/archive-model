@@ -124,3 +124,20 @@ def main():
 if __name__ == "__main__":
     main()
 
+# Write modules index for README + dashboard
+from pathlib import Path
+import json
+
+INDEX_OUT = Path("archive/modules_index.json")
+INDEX_OUT.parent.mkdir(parents=True, exist_ok=True)
+
+out = {"modules": summary}
+old = {}
+if INDEX_OUT.exists():
+    try: old = json.loads(INDEX_OUT.read_text())
+    except Exception: pass
+
+if out != old:
+    INDEX_OUT.write_text(json.dumps(out, indent=2))
+    print(f"Wrote {INDEX_OUT}")
+

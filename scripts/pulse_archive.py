@@ -141,3 +141,51 @@ if out != old:
     INDEX_OUT.write_text(json.dumps(out, indent=2))
     print(f"Wrote {INDEX_OUT}")
 
+# Update README.md health table between markers
+import datetime, re
+
+def render_health_table(mods):
+    def row(m):
+        repo = m["repo"]
+        seeds = ", ".join(Path(s).name for s in m.get("seeds_found", [])) or "—"
+        c = m.get("counts", {})
+        return f"| `{repo}` | `{m.get('branch','')}` | {c.get('statuses',0)} | {c.get('glossary',0)} | {c.get('tags',0)} | {seeds} | {m.get('last_pulsed_utc','—')} |"
+    if not mods:
+        body = "| (no modules indexed) |\n|---|\n"
+    else:
+        header = "| Repo | Branch | Statuses | Glossary | Tags | Seeds Found | Last Pulsed |\n|---|---:|---:|---:|---:|---|---|\n"
+        body = header + "\n".join(row(m) for m in mods)
+    return body
+
+def patch_readme_table(index_json):
+    readme_path = Path("README.md")
+    if not readme_path.exists(): return
+    md = readme_path.read_text()
+
+    start = "<!-- HEALTH:START -->"
+    end   = "<!-- HEALTH:END -->"
+    if start not in md or end not in md: return
+
+    table = render_health_table(index_json.get("modules", []))
+    new_md = re.sub(
+        f"{re.escape(start)}.*?{re.escape(end)}",
+        f"{start}\n{table}\n{end}",
+        md, flags=re.DOTALL
+    )
+
+    stamp = datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    new_md = re.sub(r"<!-- HEALTH:STAMP -->.*?<!-- HEALTH:STAMP -->",
+                    f"<!-- HEALTH:STAMP -->{stamp}<!-- HEALTH:STAMP -->",
+                    new_md)
+
+    if new_md != md:
+        readme_path.write_text(new_md)
+        print("README.md health section updated.")
+
+# call this after writing modules_index.json
+try:
+    idx = json.loads(Path("archive/modules_index.json").read_text())
+    patch_readme_table(idx)
+except Exception as e:
+    print("README health patch skipped:", e)
+

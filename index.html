@@ -5,7 +5,7 @@
     The Archive • Master of the Scrolls
     ───────────────────────────────────
     Purpose
-      • Present a calm, systems‑grade dashboard "face" for the Archive (🫀)
+      • Present a calm, systems-grade dashboard "face" for the Archive (🫀)
       • Read registry.yaml (+ light validation) to compute integrity KPIs
       • Render README.md for human context
       • Link out to the lifeblood seeds (glossary.yml, tags.yml) in the hub repo
@@ -53,7 +53,7 @@
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; font:16px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      margin:0; font:16px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans, "Apple Color Emoji","Segoe UI Emoji";
       background:var(--bg); color:var(--ink);
     }
     a{color:inherit}
@@ -71,24 +71,29 @@
       background:linear-gradient(145deg, #2a1220, #1a0b14); border:1px solid #3c1a2a;
       position:relative; overflow:hidden;
     }
-    .heart::after{
-      content:""; position:absolute; inset:0; background:radial-gradient(circle at 60% 40%, rgba(255,59,129,.25), transparent 55%);
-      mix-blend-mode:screen; pointer-events:none;
+    .pulse{
+      position:absolute; width:120%; height:120%; border-radius:50%;
+      top:-10%; left:-10%; background:radial-gradient(circle, rgba(255,59,129,.08), transparent 60%);
+      animation:pulse 3s infinite;
+      filter: drop-shadow(0 0 12px var(--ok));
     }
-    .pulse{animation:pulse 2s ease-in-out infinite; font-size:22px}
-    @keyframes pulse{ 0%,100%{ transform:scale(.96) } 50%{ transform:scale(1.06) } }
-    h1{font-size:24px; margin:0}
-    .tagline{color:var(--muted); font-size:14px}
-
-    .grid{display:grid; gap:16px}
-    .kpis{grid-template-columns:repeat(4, minmax(0,1fr))}
-    @media (max-width:980px){ .kpis{grid-template-columns:repeat(2, minmax(0,1fr))} }
-    @media (max-width:560px){ .kpis{grid-template-columns:1fr} }
-
-    .card{
-      background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,.08);
+    @keyframes pulse{
+      0%{ transform:scale(1); opacity:1 }
+      70%{ transform:scale(1.08); opacity:.75 }
+      100%{ transform:scale(1); opacity:1 }
     }
+    .title h1{margin:0}
+    .muted{color:var(--muted)}
+
+    .grid{
+      display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+    @media (max-width:920px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width:680px){ .grid{grid-template-columns:1fr} }
+
+    .card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px}
+    .row{display:flex; align-items:center; gap:10px}
+    .kpis{display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr))}
     .card h3{margin:0 0 8px 0; font-size:16px; letter-spacing:.2px}
     .metric{display:flex; align-items:baseline; gap:10px}
     .metric .value{font-size:28px; font-weight:700}
@@ -110,7 +115,7 @@
     .project-meta{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0}
 
     .toolbar{display:flex; flex-wrap:wrap; gap:10px}
-    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--chip); text-decoration:none}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--border); border-radius:10px; background:var(--chip); text-decoration:none}
 
     .readme{padding:0}
     .readme .md{padding:16px}
@@ -119,31 +124,29 @@
     .readme .md code{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
 
     .status-dot{width:10px; height:10px; border-radius:50%}
-    .row{display:flex; align-items:center; gap:8px}
-    .muted{color:var(--muted)}
-    footer{margin:24px 0; color:var(--muted); font-size:12px}
+    footer{margin-top:28px; color:var(--muted); font-size:13px; text-align:right}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <a class="back" href="https://zbreeden.github.io/FourTwentyAnalytics/" title="Back to Hub">← Back</a>
+      <a class="back" href="https://zbreeden.github.io/FourTwentyAnalytics/" onclick="signalNavClick && signalNavClick('back_to_hub','archive_face','nav')">← Back to Hub</a>
       <div class="brand">
-        <div class="heart" aria-hidden="true"><div id="pulse" class="pulse">🫀</div></div>
-        <div>
+        <div class="heart"><div id="pulse" class="pulse"></div>🫀</div>
+        <div class="title">
           <h1>The Archive</h1>
-          <div class="tagline">Master of the Scrolls • steward of seeds • system heartbeat</div>
+          <div class="muted">Master of the scrolls · Seeds, records, system memory</div>
         </div>
       </div>
     </header>
 
-    <section class="grid kpis" id="kpi-cards">
+    <section class="grid kpis">
       <div class="card">
-        <h3>Total Projects</h3>
-        <div class="metric"><div class="value" id="kpi-projects">—</div><div class="sub">from registry.yaml</div></div>
+        <h3>Total projects</h3>
+        <div class="metric"><div class="value" id="kpi-projects">—</div><div class="sub">from registry</div></div>
       </div>
       <div class="card">
-        <h3>Archives</h3>
+        <h3>Archives tracked</h3>
         <div class="metric"><div class="value" id="kpi-archives">—</div><div class="sub" id="kpi-archives-sub">last: —</div></div>
       </div>
       <div class="card">
@@ -169,29 +172,55 @@
 
     <section class="grid" id="orbit-groups"></section>
 
+    <!-- System Health (modules index) -->
+    <div class="section-title"><h2>System Health (modules index)</h2></div>
+    <section class="card" id="modules-health">
+      <div id="modules-health-body">Loading…</div>
+    </section>
+
     <div class="section-title"><h2>Seeds in the hub (lifeblood)</h2></div>
     <section class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
       <div class="card">
         <h3>glossary.yml</h3>
         <div class="chips">
-          <a class="btn" href="https://github.com/zbreeden/FourTwentyAnalytics/blob/main/seeds/glossary.yml" target="_blank" rel="noopener">View on GitHub</a>
-          <a class="btn" href="https://raw.githubusercontent.com/zbreeden/FourTwentyAnalytics/refs/heads/main/seeds/glossary.yml" target="_blank" rel="noopener">Raw</a>
+          <a class="chip" href="https://github.com/zbreeden/FourTwentyAnalytics/blob/main/seeds/glossary.yml" target="_blank" rel="noopener">Open in hub</a>
         </div>
-        <p class="muted" style="margin-top:10px">Source of human‑facing terms. The Archive ensures consistency and drift checks.</p>
       </div>
       <div class="card">
         <h3>tags.yml</h3>
         <div class="chips">
-          <a class="btn" href="https://github.com/zbreeden/FourTwentyAnalytics/blob/main/seeds/tags.yml" target="_blank" rel="noopener">View on GitHub</a>
-          <a class="btn" href="https://raw.githubusercontent.com/zbreeden/FourTwentyAnalytics/refs/heads/main/seeds/tags.yml" target="_blank" rel="noopener">Raw</a>
+          <a class="chip" href="https://github.com/zbreeden/FourTwentyAnalytics/blob/main/seeds/tags.yml" target="_blank" rel="noopener">Open in hub</a>
         </div>
-        <p class="muted" style="margin-top:10px">Machine‑tethered tags that flow across modules. The Archive is the source of truth for lineage.</p>
+      </div>
+      <div class="card">
+        <h3>statuses.yml</h3>
+        <div class="chips">
+          <a class="chip" href="https://github.com/zbreeden/FourTwentyAnalytics/blob/main/seeds/statuses.yml" target="_blank" rel="noopener">Open in hub</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>orbits.yml</h3>
+        <div class="chips">
+          <a class="chip" href="https://github.com/zbreeden/FourTwentyAnalytics/blob/main/seeds/orbits.yml" target="_blank" rel="noopener">Open in hub</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>emoji_palette.yml</h3>
+        <div class="chips">
+          <a class="chip" href="https://github.com/zbreeden/FourTwentyAnalytics/blob/main/seeds/emoji_palette.yml" target="_blank" rel="noopener">Open in hub</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3>modules.yml</h3>
+        <div class="chips">
+          <a class="chip" href="https://github.com/zbreeden/FourTwentyAnalytics/blob/main/seeds/modules.yml" target="_blank" rel="noopener">Open in hub</a>
+        </div>
       </div>
     </section>
 
-    <div class="section-title"><h2>README</h2></div>
+    <div class="section-title"><h2>README (context)</h2></div>
     <section class="card readme">
-      <div id="readme" class="md">Loading README.md…</div>
+      <div id="readme" class="md">Loading README…</div>
     </section>
 
     <footer id="stamp">—</footer>
@@ -215,37 +244,48 @@
       return isFinite(days) ? `${days}d ago` : "—";
     };
 
-    // Light schema checks (non‑blocking; ensures guardrails even without AJV)
+    // Light schema checks (non-blocking; ensures guardrails even without AJV)
     function lightValidate(reg){
       const issues = [];
       if (!reg || typeof reg !== 'object') issues.push('registry not an object');
       if (!reg.version) issues.push('missing version');
       if (!Array.isArray(reg.labels)) issues.push('labels not array');
       if (!Array.isArray(reg.projects)) issues.push('projects not array');
-      (reg.projects||[]).forEach((p,i)=>{
-        ['id','name','emoji','type','repo','archives'].forEach(k=>{ if(!(k in p)) issues.push(`project[${i}] missing ${k}`); });
-        if (!Array.isArray(p.archives)) issues.push(`project[${i}].archives not array`);
-      });
       return issues;
     }
 
-    async function fetchText(path){
-      const res = await fetch(path, {cache:'no-store'});
-      if (!res.ok) throw new Error(`${path}: ${res.status}`);
-      return await res.text();
+    // Fetch helpers
+    async function fetchText(url){
+      const r = await fetch(url, {cache:'no-store'});
+      if (!r.ok) throw new Error(`${r.status} ${url}`);
+      return await r.text();
+    }
+    async function fetchYaml(url){
+      const txt = await fetchText(url);
+      return jsyaml.load(txt);
     }
 
+    // Render README
+    async function renderReadme(){
+      const rawUrl = 'https://raw.githubusercontent.com/zbreeden/archive-model/main/README.md';
+      try{
+        const md = await fetchText(rawUrl);
+        el('#readme').innerHTML = marked.parse(md);
+      }catch(e){
+        el('#readme').textContent = 'Failed to load README.';
+      }
+    }
+
+    // Main loader
     async function load(){
       try{
-        // Load registry + schema (schema not strictly required for the face; we display it alongside)
-        const [regText, schemaText, readmeMd] = await Promise.all([
-          fetchText('registry.yaml').catch(()=>''),
-          fetchText('registry.schema.yaml').catch(()=>''),
-          fetchText('README.md').catch(()=>''),
+        // Load registry + schema
+        const [registryTxt, schemaTxt] = await Promise.all([
+          fetchText('registry.yaml'),
+          fetchText('registry.schema.yaml')
         ]);
-
-        const registry = regText ? jsyaml.load(regText) : null;
-        const schema = schemaText ? jsyaml.load(schemaText) : null; // displayed only; deep validation omitted by design
+        const registry = jsyaml.load(registryTxt);
+        const schema = jsyaml.load(schemaTxt);
 
         // KPIs from registry
         let projects = [], labels = [], archiveCount = 0, lastArchive = null, qaCount = 0;
@@ -267,38 +307,32 @@
         el('#kpi-archives-sub').textContent = lastArchive ? `last: ${lastArchive} • ${ago(lastArchive)}` : 'no archives yet';
         el('#kpi-qa').textContent = fmtPercent(archiveCount ? (qaCount / archiveCount) : NaN);
 
-        <div class="section-title"><h2>System Health (modules index)</h2></div>
-        <section class="card" id="modules-health">
-        <div id="modules-health-body">Loading…</div>
-        </section>
-
         // Schema/guardrail status
         const issues = lightValidate(registry);
         const dot = el('#schema-dot');
         const text = el('#schema-text');
         const list = el('#schema-issues');
         list.innerHTML = '';
-        if (!registry){
+        if (issues.length){
           dot.style.background = 'var(--warn)';
-          text.textContent = 'registry.yaml not found';
-        } else if (issues.length){
-          dot.style.background = 'var(--warn)';
-          text.textContent = `${issues.length} issue${issues.length>1?'s':''}`;
-          issues.slice(0,6).forEach(i=>{ const b=document.createElement('span'); b.className='chip'; b.textContent=i; list.appendChild(b); });
-        } else {
+          text.textContent = 'Review suggested';
+          issues.forEach(i=>{
+            const span = document.createElement('span'); span.className='chip'; span.textContent=i; list.appendChild(span);
+          });
+        }else{
           dot.style.background = 'var(--ok)';
-          text.textContent = 'healthy';
+          text.textContent = 'Looks good';
         }
 
-        // Render orbit groups
-        const groups = new Map();
-        projects.forEach(p=>{
-          const key = p.orbit || 'Ungrouped';
-          if (!groups.has(key)) groups.set(key, []);
-          groups.get(key).push(p);
-        });
+        // Group projects by orbit
         const container = el('#orbit-groups');
         container.innerHTML = '';
+        const groups = new Map();
+        projects.forEach(p=>{
+          const k = p.orbit || 'unspecified';
+          if (!groups.has(k)) groups.set(k, []);
+          groups.get(k).push(p);
+        });
         if (groups.size===0){ container.innerHTML = '<div class="muted">No projects found in registry.</div>'; }
         groups.forEach((items, orbit)=>{
           const box = document.createElement('div');
@@ -329,21 +363,17 @@
                                 <strong>${a.date||'—'}</strong>
                                 <span class='muted' style='margin-left:8px'>${a.tag||''}</span>
                               </div>
-                              <div class='chips'>${qaSpan} ${labels}</div>
+                              <div>${qaSpan} ${labels}</div>
                             </div>`;
                   }).join('')}
                 </div>
-              </div>`;
+              </div>
+            `;
             if (idx===0) d.setAttribute('open','');
             box.appendChild(d);
           });
           container.appendChild(box);
         });
-
-        // README render (best-effort)
-        const readme = el('#readme');
-        if (readmeMd){ readme.innerHTML = marked.parse(readmeMd); }
-        else { readme.textContent = 'README.md not found'; }
 
         // Stamp
         const now = new Date();
@@ -377,17 +407,20 @@
         const ts = new Date().toISOString().replace(/[-:T.]/g,'').slice(0,12);
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `archive_heartbeat_${ts}.json`;
+        a.download = `archive-heartbeat-${ts}.json`;
         a.click();
         URL.revokeObjectURL(a.href);
       });
       load();
+      renderReadme();
     });
   </script>
 
-<script>
+  <!-- System Health card: modules_index.json -->
+  <script>
 async function loadModulesHealth(){
   const host = document.getElementById('modules-health-body');
+  if (!host) return;
   try{
     const res = await fetch('archive/modules_index.json', { cache:'no-store' });
     if(!res.ok) throw new Error(res.status);
@@ -431,16 +464,16 @@ async function loadModulesHealth(){
   }
 }
 document.addEventListener('DOMContentLoaded', loadModulesHealth);
-</script>
+  </script>
 
-<style>
-  table.health{width:100%; border-collapse:collapse; font-size:14px}
-  table.health th, table.health td{border-bottom:1px solid var(--border); padding:8px 10px; text-align:left}
-  table.health th:nth-child(3),
-  table.health th:nth-child(4),
-  table.health th:nth-child(5),
-  table.health td.num{ text-align:right }
-</style>
+  <style>
+    table.health{width:100%; border-collapse:collapse; font-size:14px}
+    table.health th, table.health td{border-bottom:1px solid var(--border); padding:8px 10px; text-align:left}
+    table.health th:nth-child(3),
+    table.health th:nth-child(4),
+    table.health th:nth-child(5),
+    table.health td.num{ text-align:right }
+  </style>
 
 </body>
 </html>

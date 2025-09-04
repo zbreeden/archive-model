@@ -2,18 +2,12 @@
 
 >>Immutable ledger + snapshots
 
-## What’s inside
-- Purpose: Portfolio Tagging System
-- Artifacts: `/playground` (if applicable), `/powerbi`, `/artifacts` (screens/GIFs), `/gtm` (exports), `/ga4`
-- Telemetry: GA4 via GTM (no PII). See Tag Assistant & DebugView screenshots in `/artifacts`.
+## 📊 System Health (from Archive pulse)
+_Last refresh: <!-- HEALTH:STAMP -->pending<!-- HEALTH:STAMP -->_
 
-## Quick start
-- Open `/playground/ux_playground.html` locally (`python3 -m http.server 5500`) to trigger events.
-- Attach GTM Preview and verify in GA4 DebugView.
-
-## Highlights
-- Event taxonomy: `<event_1>`, `<event_2>` with params `<param_a>`, `<param_b>`
-- BI views: <2–3 bullets on visuals/insights>
+<!-- HEALTH:START -->
+(health table will be injected here by the pulse)
+<!-- HEALTH:END -->
 
 ## Broadcast 08302025
 - Seeded registry.yaml as the portfolio's machine ledger.  Further appends to this registry need to be rigidly draped in QA.

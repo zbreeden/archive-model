@@ -267,6 +267,11 @@
         el('#kpi-archives-sub').textContent = lastArchive ? `last: ${lastArchive} • ${ago(lastArchive)}` : 'no archives yet';
         el('#kpi-qa').textContent = fmtPercent(archiveCount ? (qaCount / archiveCount) : NaN);
 
+        <div class="section-title"><h2>System Health (modules index)</h2></div>
+        <section class="card" id="modules-health">
+        <div id="modules-health-body">Loading…</div>
+        </section>
+
         // Schema/guardrail status
         const issues = lightValidate(registry);
         const dot = el('#schema-dot');
@@ -379,5 +384,63 @@
       load();
     });
   </script>
+
+<script>
+async function loadModulesHealth(){
+  const host = document.getElementById('modules-health-body');
+  try{
+    const res = await fetch('archive/modules_index.json', { cache:'no-store' });
+    if(!res.ok) throw new Error(res.status);
+    const idx = await res.json();
+    const mods = idx.modules || [];
+    if(!mods.length){ host.textContent = 'No modules indexed yet.'; return; }
+
+    const rows = mods.map(m=>{
+      const counts = m.counts || {};
+      const seeds  = (m.seeds_found||[]).map(s => s.split('/').pop()).join(', ') || '—';
+      return `
+        <tr>
+          <td><code>${m.repo}</code></td>
+          <td><code>${m.branch||''}</code></td>
+          <td class="num">${counts.statuses||0}</td>
+          <td class="num">${counts.glossary||0}</td>
+          <td class="num">${counts.tags||0}</td>
+          <td>${seeds}</td>
+          <td class="muted">${m.last_pulsed_utc||'—'}</td>
+        </tr>
+      `;
+    }).join('');
+
+    host.innerHTML = `
+      <div class="muted" style="margin-bottom:8px">
+        Source: <code>archive/modules_index.json</code>
+      </div>
+      <div style="overflow:auto">
+        <table class="health">
+          <thead>
+            <tr>
+              <th>Repo</th><th>Branch</th><th>Statuses</th><th>Glossary</th><th>Tags</th><th>Seeds Found</th><th>Last Pulsed</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `;
+  }catch(e){
+    host.textContent = 'Failed to load modules_index.json';
+  }
+}
+document.addEventListener('DOMContentLoaded', loadModulesHealth);
+</script>
+
+<style>
+  table.health{width:100%; border-collapse:collapse; font-size:14px}
+  table.health th, table.health td{border-bottom:1px solid var(--border); padding:8px 10px; text-align:left}
+  table.health th:nth-child(3),
+  table.health th:nth-child(4),
+  table.health th:nth-child(5),
+  table.health td.num{ text-align:right }
+</style>
+
 </body>
 </html>

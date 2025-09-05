@@ -189,3 +189,17 @@ try:
 except Exception as e:
     print("README health patch skipped:", e)
 
+# ── Emit Shields badge endpoint ────────────────────────────────────────────────
+from pathlib import Path
+import json, datetime
+
+badge = {
+  "schemaVersion": 1,
+  "label": "archive pulse",
+  "message": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
+  "color": "success"
+}
+Path("archive").mkdir(parents=True, exist_ok=True)
+Path("archive/pulse_badge.json").write_text(json.dumps(badge, indent=2))
+print("Wrote badge → archive/pulse_badge.json")
+

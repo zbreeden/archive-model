@@ -11,6 +11,21 @@ _Last refresh: <!-- HEALTH:STAMP -->pending<!-- HEALTH:STAMP -->_
 
 ![Archive Pulse](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zbreeden/archive-model/main/archive/pulse_badge.json)
 
+<!-- SIGNAL:START
+id: 2025-09-04-archive-pulse-live
+ts_utc: 2025-09-04T16:45:00Z
+title: "Archive pulse wired to System Health"
+summary: >
+  The Archive now emits a beacon, a modules_index.json, and a Shields badge.
+  The Signal can harvest this as a broadcast item for the constellation feed.
+tags: [archive, pulse, system-health]
+links:
+  - label: "Modules index (JSON)"
+    url: "https://raw.githubusercontent.com/zbreeden/archive-model/main/archive/modules_index.json"
+  - label: "Beacon"
+    url: "https://raw.githubusercontent.com/zbreeden/archive-model/main/archive/signal_beacon.json"
+SIGNAL:END -->
+
 
 ## Broadcast 08302025
 - Seeded registry.yaml as the portfolio's machine ledger.  Further appends to this registry need to be rigidly draped in QA.

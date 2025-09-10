@@ -6,13 +6,16 @@
     ───────────────────────────────────
     Purpose
       • Present a calm, systems-grade dashboard "face" for the Archive (🫀)
-      • Read registry.yml (+ light validation) to compute integrity KPIs
+      • Read seeds/registry.yml (+ light validation) to compute integrity KPIs
       • Render README.md for human context
       • Link out to the lifeblood seeds (glossary.yml, tags.yml) in the hub repo
 
     How to use
       1) Drop this file at the repo root as index.html (works with GitHub Pages)
-      2) Ensure registry.yaml and registry.schema.yaml live in the same directory
+      2) Ensure your files live at:
+           - seeds/registry.yml
+           - schema/registry.schema.yml
+         (This matches your standard setup and the schema path patterns.)
       3) Optional: update HUB_URL and SEEDS_* links below to match your setup
   -->
   <meta charset="utf-8" />
@@ -21,14 +24,12 @@
   <title>🫀 The Archive — Master of the Scrolls</title>
 
   <!-- Optional: Google Tag Manager (prefer GTM for analytics plumbing) -->
-  
   <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
       var f=d.getElementsByTagName(s)[0], j=d.createElement(s), dl=l!='dataLayer'?'&l='+l:'';
       j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl; f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-WVC4SNLB');
   </script>
-  -->
 
   <style>
     :root{
@@ -279,7 +280,7 @@
     // Main loader
     async function load(){
       try{
-        // Load registry + schema
+        // Load registry + schema from standard locations
         const [registryTxt, schemaTxt] = await Promise.all([
           fetchText('seeds/registry.yml'),
           fetchText('schema/registry.schema.yml')
@@ -384,7 +385,7 @@
         el('#pulse').style.filter = (issues.length? 'drop-shadow(0 0 12px var(--warn))' : 'drop-shadow(0 0 12px var(--ok))');
       }catch(err){
         console.error(err);
-        alert('Failed to load dashboard face. See console for details.');
+        alert('Failed to load dashboard face. Check that seeds/registry.yml and schema/registry.schema.yml exist.');
       }
     }
 

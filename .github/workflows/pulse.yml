@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      FOURTWENTY_TOPIC: fourtwenty-module   # used if you switch to topic discovery
+      FOURTWENTY_TOPIC: fourtwentyanalytics   # used if you switch to topic discovery
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

@@ -8,7 +8,7 @@ on:
 permissions:
   contents: write           # allow committing updated index
   issues: write             # if you choose to open issues
-  metadata: read
+  
 
 jobs:
   pulse:

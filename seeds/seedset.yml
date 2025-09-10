@@ -1,0 +1,22 @@
+# Files to push into every module repo (relative to repo root)
+files:
+  - seeds/emoji_palette.yml
+  - seeds/orbits.yml
+  - seeds/tags.yml
+  - seeds/glossary.yml
+  - seeds/statuses.yml
+  - seeds/modules.yml
+  - seeds/registry.yml
+  - seeds/seedset.yml
+  - schema/funnel_spec.yml
+  - schema/funnel_spec.schema.yml
+  - schema/emoji_palette.schema.yml
+  - schema/orbits.schema.yml
+  - schema/tags.schema.yml
+  - schema/glossary.schema.yml
+  - schema/statuses.schema.yml
+  - schema/modules.schema.yml
+  - schema/registry.schema.yml
+  - signals/latest.json
+  - root/README.md
+  - root/index.html

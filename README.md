@@ -27,10 +27,4 @@ links:
 SIGNAL:END -->
 
 
-## Broadcast 08302025
-- Seeded registry.yaml as the portfolio's machine ledger.  Further appends to this registry need to be rigidly draped in QA.
-
-## Broadcast 08302025
-- Seeded registry.schema.yaml as the portfolio's machine defined schema.
-
 License: MIT

@@ -165,8 +165,8 @@
       <div class="toolbar">
         <button class="btn" id="refresh">↻ Refresh</button>
         <button class="btn" id="export">⬇︎ Export heartbeat</button>
-        <a class="btn" href="registry.yaml" target="_blank" rel="noopener">Open registry.yaml</a>
-        <a class="btn" href="registry.schema.yaml" target="_blank" rel="noopener">Open schema</a>
+        <a class="btn" href="seeds/registry.yml" target="_blank" rel="noopener">Open registry.yml</a>
+        <a class="btn" href="schema/registry.schema.yml" target="_blank" rel="noopener">Open schema</a>
       </div>
     </div>
 
@@ -281,8 +281,8 @@
       try{
         // Load registry + schema
         const [registryTxt, schemaTxt] = await Promise.all([
-          fetchText('registry.yaml'),
-          fetchText('registry.schema.yaml')
+          fetchText('seeds/registry.yml'),
+          fetchText('schema/registry.schema.yml')
         ]);
         const registry = jsyaml.load(registryTxt);
         const schema = jsyaml.load(schemaTxt);
@@ -446,7 +446,7 @@ async function loadModulesHealth(){
 
     host.innerHTML = `
       <div class="muted" style="margin-bottom:8px">
-        Source: <code>archive/modules_index.json</code>
+        Source: <code>archive/signals/modules_index.json</code>
       </div>
       <div style="overflow:auto">
         <table class="health">

@@ -5,9 +5,15 @@
 ## 📊 System Health (from Archive pulse)
 _Last refresh: <!-- HEALTH:STAMP -->pending<!-- HEALTH:STAMP -->_
 
-<!-- HEALTH:START -->
-(health table will be injected here by the pulse)
-<!-- HEALTH:END -->
+<!-- ARCHIVE:HEALTH:START -->
+
+### System Health
+
+| Module | Orbit | Status | Seeds (m/t/g) | Last Push |
+|---|---|---|---|---|
+| [archive-model](https://github.com/zbreeden/archive-model) | core | active | ✅/✅/✅ | — |
+
+<!-- ARCHIVE:HEALTH:END -->
 
 ![Archive Pulse](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zbreeden/archive-model/main/archive/pulse_badge.json)
 
@@ -29,12 +35,3 @@ SIGNAL:END -->
 
 License: MIT
 
-<!-- ARCHIVE:HEALTH:START -->
-
-### System Health
-
-| Module | Orbit | Status | Seeds (m/t/g) | Last Push |
-|---|---|---|---|---|
-| [archive-model](https://github.com/zbreeden/archive-model) | core | active | ✅/✅/✅ | — |
-
-<!-- ARCHIVE:HEALTH:END -->

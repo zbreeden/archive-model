@@ -48,7 +48,7 @@ def utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
 
-def mkdirs() -> None:
+def mkdirs() -> signals:
     ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
 
 

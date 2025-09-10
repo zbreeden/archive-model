@@ -28,6 +28,6 @@ jobs:
         run: |
           git config user.name  "Archive Pulse Bot"
           git config user.email "actions@github.com"
-          git add !archive/pulse_badge.json !archive/modules_index.json !archive/signal_beacon.json !README.md || true
+          git add archive/pulse_badge.json archive/modules_index.json archive/signal_beacon.json README.md || true
           git diff --quiet && echo "No changes" || git commit -m "chore(pulse): refresh modules index"
           git push

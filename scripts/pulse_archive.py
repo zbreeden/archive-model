@@ -3,9 +3,9 @@
 pulse_archive.py
 - Scans your constellation (optionally via GitHub topic), or just this repo.
 - Writes:
-    archive/modules_index.json
-    archive/pulse_badge.json
-    archive/signal_beacon.json
+    archive/signals/modules_index.json
+    archive/signals/pulse_badge.json
+    archive/signals/signal_beacon.json
 - Optionally patches README.md between HEALTH markers.
 
 Requires: requests, pyyaml
@@ -34,7 +34,7 @@ except Exception:
     requests = None
 
 ROOT = Path(__file__).resolve().parents[1]
-ARCHIVE_DIR = ROOT / "archive"
+ARCHIVE_DIR = ROOT / "signals"
 INDEX_OUT = ARCHIVE_DIR / "modules_index.json"
 BADGE_OUT = ARCHIVE_DIR / "pulse_badge.json"
 BEACON_OUT = ARCHIVE_DIR / "signal_beacon.json"

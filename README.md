@@ -28,3 +28,13 @@ SIGNAL:END -->
 
 
 License: MIT
+
+<!-- ARCHIVE:HEALTH:START -->
+
+### System Health
+
+| Module | Orbit | Status | Seeds (m/t/g) | Last Push |
+|---|---|---|---|---|
+| [archive-model](https://github.com/zbreeden/archive-model) | core | active | ✅/✅/✅ | — |
+
+<!-- ARCHIVE:HEALTH:END -->

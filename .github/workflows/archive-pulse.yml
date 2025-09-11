@@ -1,0 +1,36 @@
+name: Archive Pulse (nightly)
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # 03:00 UTC nightly
+  workflow_dispatch:
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout hub repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pyyaml pandas
+
+      - name: Run Archive Pulse
+        env:
+          HUB_PAT: ${{ secrets.HUB_PAT }}
+          HUB_OWNER: ${{ secrets.HUB_OWNER }}
+          HUB_REPO: ${{ secrets.HUB_REPO }}
+          HUB_BRANCH: main
+          XLSX_PATH: archive_pulse.xlsx
+          # DRY_RUN: "1"   # enable if you want to test without pushing
+        run: |
+          python scripts/pulse_archive.py

@@ -1,284 +1,277 @@
+
 #!/usr/bin/env python3
 """
-pulse_archive.py
-- Scans your constellation (optionally via GitHub topic), or just this repo.
-- Writes:
-    archive/signals/modules_index.json
-    archive/signals/pulse_badge.json
-    archive/signals/signal_beacon.json
-- Optionally patches README.md between HEALTH markers.
+Revised Archive Pulse
 
-Requires: requests, pyyaml
-Env:
-  GITHUB_TOKEN       (auto in Actions)
-  FOURTWENTY_TOPIC   (optional; enables topic-based discovery)
+What it does
+------------
+Reads a configuration Excel (default: archive_pulse.xlsx) whose *columns* are
+hub (Archive) seed target URLs and whose *rows* are the constellation seed URLs
+to aggregate for each target. For each column, it fetches the YAML files listed
+in the cells, concatenates them, de-duplicates by "key" when available (falls
+back to whole-object), and writes the merged YAML to the Archive repository path
+indicated by the column header URL (the path after `/tree/<branch>/`).
+
+Optionally, if HUB_PAT/HUB_OWNER/HUB_REPO are provided, pushes the updated files
+via the GitHub Contents API.
+
+Environment
+-----------
+- HUB_PAT   : (required to push) classic/repo-scoped PAT for the hub repo
+- HUB_OWNER : e.g., "zbreeden"
+- HUB_REPO  : e.g., "fourtwentyanalytics" or "archive-model" (your Archive repo)
+- HUB_BRANCH: branch to write against (default: "main")
+- XLSX_PATH : path to the Excel config (default: "./archive_pulse.xlsx")
+- DRY_RUN   : if "1", only writes to local filesystem (no API push)
+
+Dependencies
+------------
+- requests
+- pyyaml
+- pandas (for reading the Excel)
 """
 
-from __future__ import annotations
+import base64
 import json
 import os
-import sys
 import re
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+import sys
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 try:
-    import yaml  # type: ignore
-except Exception:
-    yaml = None
+    import requests
+except Exception as e:
+    print("[pulse] Missing dependency: requests", file=sys.stderr)
+    raise
 
 try:
-    import requests  # type: ignore
-except Exception:
-    requests = None
+    import yaml
+except Exception as e:
+    print("[pulse] Missing dependency: pyyaml", file=sys.stderr)
+    raise
 
-ROOT = Path(__file__).resolve().parents[1]
-ARCHIVE_DIR = ROOT / "signals"
-INDEX_OUT = ARCHIVE_DIR / "modules_index.json"
-BADGE_OUT = ARCHIVE_DIR / "pulse_badge.json"
-BEACON_OUT = ARCHIVE_DIR / "signal_beacon.json"
-README = ROOT / "README.md"
-
-HEALTH_START = "<!-- ARCHIVE:HEALTH:START -->"
-HEALTH_END = "<!-- ARCHIVE:HEALTH:END -->"
+try:
+    import pandas as pd
+except Exception as e:
+    print("[pulse] Missing dependency: pandas", file=sys.stderr)
+    raise
 
 
-def utc_now_iso() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+def log(msg: str) -> None:
+    print(f"[pulse] {msg}")
 
 
-def mkdirs() -> signals:
-    ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
+def to_raw_url(tree_url: str) -> Optional[str]:
+    """Convert a GitHub tree URL to a raw URL.
+    Accepts forms like:
+      https://github.com/<owner>/<repo>/tree/<branch>/<path>
+    Returns:
+      https://raw.githubusercontent.com/<owner>/<repo>/<branch>/<path>
+    """
+    if not tree_url or not isinstance(tree_url, str):
+        return None
+    m = re.match(r"^https://github\.com/([^/]+)/([^/]+)/tree/([^/]+)/(.+)$", tree_url.strip())
+    if not m:
+        return None
+    owner, repo, branch, path = m.groups()
+    return f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}"
 
 
-def gh_headers() -> Dict[str, str]:
-    tok = os.getenv("GITHUB_TOKEN")
-    h = {"Accept": "application/vnd.github+json"}
-    if tok:
-        h["Authorization"] = f"Bearer {tok}"
+def hub_path_from_url(tree_url: str) -> Optional[Tuple[str, str, str]]:
+    """Return (owner, repo, path) for the hub target from a tree URL"""
+    m = re.match(r"^https://github\.com/([^/]+)/([^/]+)/tree/([^/]+)/(.+)$", tree_url.strip())
+    if not m:
+        return None
+    owner, repo, branch, path = m.groups()
+    return owner, repo, path
+
+
+def gh_headers(token: Optional[str]) -> Dict[str, str]:
+    h = {"Accept": "application/vnd.github+json", "User-Agent": "archive-pulse/1.0"}
+    if token:
+        h["Authorization"] = f"Bearer {token}"
     return h
 
 
-def gh_get(url: str, params: Optional[Dict[str, Any]] = None) -> Any:
-    if requests is None:
-        raise RuntimeError("requests not installed but needed for GitHub API calls")
-    r = requests.get(url, headers=gh_headers(), params=params, timeout=30)
-    r.raise_for_status()
-    return r.json()
-
-
-def discover_repos_via_topic() -> List[Dict[str, Any]]:
-    """Return minimal info for repos that match the topic and owner."""
-    topic = os.getenv("FOURTWENTY_TOPIC")
-    repo_env = os.getenv("GITHUB_REPOSITORY", "")
-    owner = repo_env.split("/")[0] if "/" in repo_env else os.getenv("GITHUB_REPOSITORY_OWNER", "")
-    if not topic or not owner:
+def fetch_yaml(url: str) -> List[Dict[str, Any]]:
+    """Fetch YAML from raw URL and normalize to a list of dicts."""
+    r = requests.get(url, timeout=30)
+    if r.status_code != 200:
+        raise RuntimeError(f"GET {url} -> {r.status_code}")
+    text = r.text
+    data = yaml.safe_load(text) if text.strip() else []
+    # Normalize:
+    if data is None:
         return []
-
-    repos: List[Dict[str, Any]] = []
-    page = 1
-    while True:
-        url = f"https://api.github.com/search/repositories"
-        q = f"topic:{topic} user:{owner}"
-        payload = gh_get(url, {"q": q, "per_page": 100, "page": page})
-        items = payload.get("items", [])
-        for it in items:
-            repos.append({
-                "key": it["name"].replace("-", "_"),
-                "name": it["name"],
-                "repo": it["html_url"],
-                "default_branch": it.get("default_branch"),
-                "last_push": it.get("pushed_at"),
-                "stars": it.get("stargazers_count"),
-                "archived": it.get("archived"),
-            })
-        if len(items) < 100:
-            break
-        page += 1
-    return repos
+    if isinstance(data, list):
+        # ensure list of dicts when possible
+        return [x if isinstance(x, dict) else {"value": x} for x in data]
+    if isinstance(data, dict):
+        # convert mapping -> list of {key: k, **v} if values are dicts
+        out = []
+        for k, v in data.items():
+            if isinstance(v, dict):
+                d = dict(v)
+                d.setdefault("key", k)
+                out.append(d)
+            else:
+                out.append({"key": k, "value": v})
+        return out
+    # fallback: wrap as value
+    return [{"value": data}]
 
 
-def read_local_seeds() -> Dict[str, bool]:
-    seeds = {
-        "modules": (ROOT / "seeds" / "modules.yml").exists(),
-        "tags": (ROOT / "seeds" / "tags.yml").exists(),
-        "glossary": (ROOT / "seeds" / "glossary.yml").exists(),
-        "rules": (ROOT / "seeds" / "rules.yml").exists(),
+def dedupe_records(records: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """De-dupe by 'key' when present, otherwise by JSON-ser of the object."""
+    seen_key = set()
+    seen_blob = set()
+    out: List[Dict[str, Any]] = []
+    for rec in records:
+        if not isinstance(rec, dict):
+            rec = {"value": rec}
+        if "key" in rec and isinstance(rec["key"], str) and rec["key"]:
+            k = rec["key"]
+            if k in seen_key:
+                continue
+            seen_key.add(k)
+            out.append(rec)
+        else:
+            blob = json.dumps(rec, sort_keys=True, ensure_ascii=False)
+            if blob in seen_blob:
+                continue
+            seen_blob.add(blob)
+            out.append(rec)
+    return out
+
+
+def write_yaml_local(path: str, records: List[Dict[str, Any]]) -> None:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        yaml.safe_dump(records, f, allow_unicode=True, sort_keys=False)
+    log(f"wrote {path} ({len(records)} rows)")
+
+
+def gh_get_content_sha(owner: str, repo: str, path: str, branch: str, token: str) -> Optional[str]:
+    url = f"https://api.github.com/repos/{owner}/{repo}/contents/{path}"
+    r = requests.get(url, headers=gh_headers(token), params={"ref": branch}, timeout=30)
+    if r.status_code == 200:
+        return r.json().get("sha")
+    if r.status_code == 404:
+        return None
+    raise RuntimeError(f"GET {url} -> {r.status_code} {r.text[:200]}")
+
+
+def gh_put_file(owner: str, repo: str, path: str, branch: str, token: str, content_bytes: bytes, message: str) -> None:
+    url = f"https://api.github.com/repos/{owner}/{repo}/contents/{path}"
+    sha = gh_get_content_sha(owner, repo, path, branch, token)
+    payload = {
+        "message": message,
+        "content": base64.b64encode(content_bytes).decode("ascii"),
+        "branch": branch,
     }
-    return seeds
+    if sha:
+        payload["sha"] = sha
+    r = requests.put(url, headers=gh_headers(token), json=payload, timeout=30)
+    if r.status_code not in (200, 201):
+        raise RuntimeError(f"PUT {url} -> {r.status_code} {r.text[:400]}")
+    log(f"pushed {owner}/{repo}@{branch}:{path}")
 
 
-def load_registry_yaml() -> List[Dict[str, Any]]:
+def parse_excel(xlsx_path: str) -> List[Tuple[str, List[str]]]:
     """
-    Optional: if seeds/registry.yml exists, load module entries from it.
-    Expected (flexible) shape: list of {key, repo, orbit?, status?}
+    Returns a list of tuples: (hub_target_tree_url, [source_tree_urls...])
+    The Excel is expected to have one sheet. Each column header is the hub target URL.
+    Each non-empty cell under a column is a source repo tree URL to aggregate.
     """
-    reg = ROOT / "seeds" / "registry.yml"
-    if not reg.exists() or yaml is None:
-        return []
-    try:
-        data = yaml.safe_load(reg.read_text()) or []
-        if isinstance(data, list):
-            return [d for d in data if isinstance(d, dict)]
-    except Exception:
-        pass
-    return []
-
-
-def compose_local_repo_row() -> Dict[str, Any]:
-    """Produce a row for *this* repo so you always have at least one entry."""
-    repo_env = os.getenv("GITHUB_REPOSITORY", "")
-    html = f"https://github.com/{repo_env}" if repo_env else ""
-    seeds = read_local_seeds()
-    return {
-        "key": (repo_env.split("/")[-1] if repo_env else "this_repo").replace("-", "_"),
-        "name": repo_env.split("/")[-1] if repo_env else "this_repo",
-        "repo": html,
-        "orbit": "core",
-        "status": "active",
-        "last_push": None,   # could be filled via API if desired
-        "seeds": seeds,
-        "checks": {
-            "schemas_ok": True,           # placeholder; wire up real validation later
-            "readme_backlink": True,      # placeholder
-        },
-    }
-
-
-def build_modules_index() -> List[Dict[str, Any]]:
-    """
-    Priority:
-      1) If registry.yml exists → use it as the spine.
-      2) Else if FOURTWENTY_TOPIC set → search GitHub.
-      3) Always include a row for this repo.
-    """
-    index: List[Dict[str, Any]] = []
-
-    reg_rows = load_registry_yaml()
-    if reg_rows:
-        for r in reg_rows:
-            row = {
-                "key": r.get("key") or (r.get("name") or "unknown").replace("-", "_"),
-                "name": r.get("name") or r.get("key") or "unknown",
-                "repo": r.get("repo") or "",
-                "orbit": r.get("orbit") or "unknown",
-                "status": r.get("status") or "unknown",
-                "last_push": r.get("last_push"),
-                "seeds": r.get("seeds") or {},
-                "checks": r.get("checks") or {},
-            }
-            index.append(row)
-
-    if not index:
-        # try topic discovery
-        topic_rows = []
-        try:
-            topic_rows = discover_repos_via_topic()
-        except Exception as e:
-            print(f"[pulse] topic discovery skipped: {e}")
-        for tr in topic_rows:
-            index.append({
-                "key": tr["key"],
-                "name": tr["name"],
-                "repo": tr["repo"],
-                "orbit": "unknown",
-                "status": "unknown",
-                "last_push": tr.get("last_push"),
-                "seeds": {},
-                "checks": {},
-            })
-
-    # Always include this repo (de-dup by key)
-    this_row = compose_local_repo_row()
-    if not any(r.get("key") == this_row["key"] for r in index):
-        index.append(this_row)
-
-    # Sort by name for stable diffs
-    index.sort(key=lambda r: r.get("name", ""))
-    return index
-
-
-def write_json(path: Path, obj: Any) -> None:
-    path.write_text(json.dumps(obj, indent=2))
-    print(f"[pulse] wrote {path.relative_to(ROOT)}")
-
-
-def write_artifacts(index_rows: List[Dict[str, Any]]) -> None:
-    mkdirs()
-    # 1) modules_index
-    write_json(INDEX_OUT, index_rows)
-
-    # 2) badge (tiny)
-    badge = {
-        "status": "ok",
-        "timestamp": utc_now_iso(),
-        "modules": len(index_rows),
-        "healthy": sum(1 for r in index_rows if r.get("checks", {}).get("schemas_ok") is True),
-        "warnings": sum(1 for r in index_rows if r.get("checks", {}).get("schemas_ok") is False),
-    }
-    write_json(BADGE_OUT, badge)
-
-    # 3) signal beacon (change tick)
-    beacon = {"latest": [{"type": "modules_index_refresh", "at": utc_now_iso(), "changed": 0}]}
-    write_json(BEACON_OUT, beacon)
-
-
-def render_health_table(index_rows: List[Dict[str, Any]]) -> str:
-    """Simple markdown table for README panel."""
-    lines = [
-        "### System Health",
-        "",
-        "| Module | Orbit | Status | Seeds (m/t/g) | Last Push |",
-        "|---|---|---|---|---|",
-    ]
-    for r in index_rows:
-        seeds = r.get("seeds", {})
-        seed_str = f"{'✅' if seeds.get('modules') else '—'}/" \
-                   f"{'✅' if seeds.get('tags') else '—'}/" \
-                   f"{'✅' if seeds.get('glossary') else '—'}"
-        lines.append(f"| [{r.get('name')}]({r.get('repo','')}) "
-                     f"| {r.get('orbit','—')} | {r.get('status','—')} "
-                     f"| {seed_str} | {r.get('last_push') or '—'} |")
-    return "\n".join(lines) + "\n"
-
-
-def patch_readme_panel(index_rows: List[Dict[str, Any]]) -> None:
-    """Insert/replace the HEALTH section in README using on-disk index."""
-    if not README.exists():
-        print("[pulse] README.md not found; skipping health panel patch.")
-        return
-
-    content = README.read_text()
-    panel = "\n".join([HEALTH_START, "", render_health_table(index_rows), HEALTH_END]) + "\n"
-
-    if HEALTH_START in content and HEALTH_END in content:
-        # replace existing block
-        pattern = re.compile(
-            re.escape(HEALTH_START) + r".*?" + re.escape(HEALTH_END),
-            flags=re.DOTALL,
-        )
-        new = pattern.sub(panel, content)
-    else:
-        # append to end
-        new = content.rstrip() + "\n\n" + panel
-
-    if new != content:
-        README.write_text(new)
-        print("[pulse] README.md health panel updated.")
-    else:
-        print("[pulse] README.md health panel unchanged.")
+    df = pd.read_excel(xlsx_path, sheet_name=0)
+    # Drop fully empty columns
+    df = df.dropna(axis=1, how="all")
+    results: List[Tuple[str, List[str]]] = []
+    for col in df.columns:
+        hub_url = str(col).strip()
+        # Collect non-empty cell values in this column
+        srcs = []
+        for val in df[col].tolist():
+            if isinstance(val, float) and pd.isna(val):
+                continue
+            if val is None:
+                continue
+            s = str(val).strip()
+            if not s or s.lower() == "nan":
+                continue
+            srcs.append(s)
+        results.append((hub_url, srcs))
+    return results
 
 
 def main() -> int:
-    rows = build_modules_index()
-    write_artifacts(rows)
-    # Read back what we wrote (single source of truth) for README patch
-    try:
-        idx_rows = json.loads(INDEX_OUT.read_text())
-    except Exception:
-        idx_rows = rows  # fallback if read fails
-    patch_readme_panel(idx_rows)
+    xlsx_path = os.getenv("XLSX_PATH", "archive_pulse.xlsx")
+    dry_run = os.getenv("DRY_RUN", "").strip() == "1"
+    hub_pat = os.getenv("HUB_PAT", "").strip()
+    hub_owner = os.getenv("HUB_OWNER", "").strip()
+    hub_repo  = os.getenv("HUB_REPO", "").strip()
+    hub_branch = os.getenv("HUB_BRANCH", "main").strip()
+
+    if not os.path.exists(xlsx_path):
+        raise SystemExit(f"Config Excel not found at {xlsx_path}")
+
+    plan = parse_excel(xlsx_path)
+    if not plan:
+        raise SystemExit("No columns/targets found in Excel.")
+
+    # Process each target column independently
+    pushes: List[Tuple[str, str]] = []  # (repo, path) pushed
+    for hub_tree_url, src_tree_urls in plan:
+        # Determine hub local path (relative to the hub repo root) and also verify owner/repo match if provided
+        hub_tuple = hub_path_from_url(hub_tree_url)
+        if not hub_tuple:
+            log(f"skip invalid hub URL: {hub_tree_url}")
+            continue
+        hub_owner_from_col, hub_repo_from_col, hub_rel_path = hub_tuple
+
+        # Warn if XLS specifies different hub repo than environment (we still honor env for push)
+        if hub_owner and hub_repo and (hub_owner_from_col != hub_owner or hub_repo_from_col != hub_repo):
+            log(f"warning: hub URL owner/repo ({hub_owner_from_col}/{hub_repo_from_col}) "
+                f"differs from HUB_OWNER/HUB_REPO ({hub_owner}/{hub_repo}).")
+
+        # Fetch all source YAMLs
+        merged: List[Dict[str, Any]] = []
+        for src_tree_url in src_tree_urls:
+            raw = to_raw_url(src_tree_url)
+            if not raw:
+                log(f"  skip invalid source URL: {src_tree_url}")
+                continue
+            try:
+                rows = fetch_yaml(raw)
+                log(f"  + {src_tree_url} -> {len(rows)} rows")
+                merged.extend(rows)
+            except Exception as e:
+                log(f"  ! error fetching {src_tree_url}: {e}")
+                continue
+
+        # De-dupe
+        merged = dedupe_records(merged)
+
+        # Write locally (assuming script is run at repo root of hub)
+        local_path = hub_rel_path  # same relative path as in URL
+        write_yaml_local(local_path, merged)
+
+        # Optionally push
+        if not dry_run and hub_pat and hub_owner and hub_repo:
+            try:
+                with open(local_path, "rb") as f:
+                    content_bytes = f.read()
+                gh_put_file(hub_owner, hub_repo, hub_rel_path, hub_branch, hub_pat, content_bytes,
+                            message=f"archive pulse: update {hub_rel_path} ({len(merged)} rows)")
+                pushes.append((hub_repo, hub_rel_path))
+            except Exception as e:
+                log(f"  ! push failed for {local_path}: {e}")
+
+    if pushes:
+        log("completed pushes:\n  " + "\n  ".join([f"{r}:{p}" for r, p in pushes]))
+    else:
+        log("completed (local writes only)")
+
     return 0
 
 

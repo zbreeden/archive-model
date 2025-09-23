@@ -1,6 +1,6 @@
 {
-  "id": "20250923T234333Z-archive-model-constellation_pulse",
-  "ts_utc": "2025-09-23T23:43:33Z",
+  "id": "20250923T234826Z-archive-model-constellation_pulse",
+  "ts_utc": "2025-09-23T23:48:26Z",
   "date": "2025-09-23",
   "module": "Archive Model",
   "repo": "archive-model",
@@ -9,7 +9,7 @@
   "tags": ["pulse", "status", "automation"],
   "rating": "normal",
   "origin": {
-    "name": "Archive Modl",
+    "name": "Archive Model",
     "url": "https://zbreeden.github.io/archive-model/",
     "emoji": "🫀"
   },
@@ -22,6 +22,6 @@
     "broadcast_key": "constellation_pulse",
     "stars_scanned": 1,
     "stars_updated": 1,
-    "pulse_timestamp": "2025-09-23T23:43:33Z"
+    "pulse_timestamp": "2025-09-23T23:48:26Z"
   }
 }

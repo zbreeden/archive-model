@@ -15,7 +15,7 @@ on:
       - ".github/workflows/pulse-constellation.yml"
   schedule:
     # 09:00 America/New_York ≈ 13:00 UTC (update if you want a different local time)
-    - cron: "0 13 * * *"
+    # cron: "0 13 * * *"
 
 permissions:
   contents: write

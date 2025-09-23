@@ -1,15 +1,15 @@
 {
-  "id": "2025-09-10T20:00:00Z-archive-broadcast-seed",
-  "ts_utc": "2025-09-10T20:00:00Z",
-  "date": "2025-09-10",
-  "module": "The Archive",
-  "repo": "archive-model",
-  "title": "Master star broadcast seed initialized",
-  "summary": "Bootstrapped constellation broadcasting: schema, nightly pulse, and Signal renderer.",
-  "tags": ["broadcasting", "schema", "renderer", "pulse"],
-  "rating": "high",
+  "id": "20250923T003420Z-archive-model-genesis",
+  "ts_utc": "2025-09-23T00:34:20Z",
+  "date": "2025-09-23",
+  "module": "Archive Model",
+  "repo": "archive-model", 
+  "title": "New constellation star initialized",
+  "summary": "Generated module scaffold with seedset distribution and basic broadcast structure.",
+  "tags": ["genesis", "scaffold", "module", "core"],
+  "rating": "normal",
   "origin": {
-    "name": "The Archive",
+    "name": "Archive Model",
     "url": "https://zbreeden.github.io/archive-model/",
     "emoji": "🫀"
   },
@@ -20,7 +20,10 @@
     "runbook": "https://github.com/zbreeden/archive-model/blob/main/RUNBOOK.md"
   },
   "payload": {
-    "notes": "This is the top-level aggregator in The Archive. Nightly pulse pulls latest.json from each star."
+    "orbit": "core",
+    "status": "seed", 
+    "module_key": "archive_model",
+    "notes": "Initial scaffold created by new-module.sh script. Ready for customization and development."
   },
   "checksum": "",
   "version": "1.0.0"

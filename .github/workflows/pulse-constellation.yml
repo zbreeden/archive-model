@@ -47,7 +47,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Ensure script is executable
-        run: chmod +x ./pulse-constellation.sh
+        run: chmod +x .scripts/pulse-constellation.sh
 
       # Optional: surface script version and working dir for debugging
       - name: Pre-flight info

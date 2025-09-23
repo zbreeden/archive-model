@@ -11,7 +11,7 @@ on:
   push:
     paths:
       - "pulse-constellation.sh"
-      - "signals/**"
+      - "scripts/**"
       - ".github/workflows/pulse-constellation.yml"
   schedule:
     # 09:00 America/New_York ≈ 13:00 UTC (adjusts with DST via manual updates if needed)

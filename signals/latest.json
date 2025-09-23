@@ -1,11 +1,13 @@
 {
-  "id": "20250923T225940Z-nightly_pulse",
-  "ts_utc": "2025-09-23T22:59:40Z",
+  "id": "20250923T230229Z-archive-model-constellation_pulse",
+  "ts_utc": "2025-09-23T23:02:29Z",
+  "date": "2025-09-23",
   "module": "Archive Model",
   "repo": "archive-model",
-  "title": "Nightly Heartbeats",
-  "summary": "The Archive heart is now beating; nightly pulses bring local seed data back to The Barycenter!!!",
-  "rating": "critical",
+  "title": "Constellation Status Pulse Complete",
+  "summary": "The Archive has completed its nightly pulse of the constellation, updating status information for 1 stars with 1 status changes.",
+  "tags": ["pulse", "status", "automation"],
+  "rating": "normal",
   "origin": {
     "name": "Archive Model",
     "url": "https://zbreeden.github.io/archive-model/",
@@ -17,9 +19,9 @@
   },
   "payload": {
     "module_key": "archive_model",
-    "broadcast_key": "nightly_pulse",
-    "tags": [
-      "puse"
-    ]
+    "broadcast_key": "constellation_pulse",
+    "stars_scanned": 1,
+    "stars_updated": 1,
+    "pulse_timestamp": "2025-09-23T23:02:29Z"
   }
 }

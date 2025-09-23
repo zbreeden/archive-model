@@ -1,0 +1,82 @@
+name: Pulse Constellation
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run without pushing changes"
+        required: false
+        type: boolean
+        default: false
+  push:
+    paths:
+      - "pulse-constellation.sh"
+      - "signals/**"
+      - ".github/workflows/pulse-constellation.yml"
+  schedule:
+    # 09:00 America/New_York ≈ 13:00 UTC (adjusts with DST via manual updates if needed)
+    - cron: "0 13 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: pulse-constellation-${{ github.ref }}
+      cancel-in-progress: false
+
+    env:
+      # If your script needs to authenticate to *other* repos, provide a PAT via repo secret HUB_PAT.
+      # For pushes to the current repo, GITHUB_TOKEN (below) is usually enough.
+      HUB_PAT: ${{ secrets.HUB_PAT }}
+      HUB_OWNER: zbreeden
+      HUB_REPO: archive-model
+      DRY_RUN: ${{ inputs.dry_run && '1' || '0' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # needed if your script inspects history
+
+      - name: Set Git identity for commits
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Ensure script is executable
+        run: chmod +x ./pulse-constellation.sh
+
+      # Optional: surface script version and working dir for debugging
+      - name: Pre-flight info
+        run: |
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Dry run: $DRY_RUN"
+          bash --version
+          git status --porcelain
+
+      - name: Run pulse script
+        shell: bash
+        env:
+          # Actions’ built-in token – good for pushing to *this* repo.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          ./pulse-constellation.sh
+
+      - name: Commit & push any changes
+        if: ${{ inputs.dry_run != true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add -A
+            git commit -m "Pulse: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            # Use the default actions token (preferred) to push to this repo
+            git push
+          else
+            echo "No changes to commit."
+          fi

@@ -1,38 +1,32 @@
-# FourTwenty • The Archive
+# Archive Model
 
->>Immutable ledger + snapshots
+> **The Archive is the ledger**
 
-## 📊 System Health (from Archive pulse)
-_Last refresh: <!-- HEALTH:STAMP -->pending<!-- HEALTH:STAMP -->_
+## 🌌 Constellation Information
 
-<!-- ARCHIVE:HEALTH:START -->
+- **Module Key**: `archive_model`  
+- **Repository**: `archive-model`
+- **Orbit**: `core`
+- **Status**: `seed`
+- **Emoji**: 🫀
 
-### System Health
+## 🚀 Quick Start
 
-| Module | Orbit | Status | Seeds (m/t/g) | Last Push |
-|---|---|---|---|---|
-| [archive-model](https://github.com/zbreeden/archive-model) | core | active | ✅/✅/✅ | — |
+1. **Review seeds/**: Adapt seeded data for this module
+2. **Configure schemas/**: Update schema definitions as needed  
+3. **Generate signals/**: Create latest.json broadcast file
+4. **Run validation**: `scripts/validate.sh`
 
-<!-- ARCHIVE:HEALTH:END -->
+## 📡 Broadcasting
 
+This module produces a `signals/latest.json` file conforming to the constellation's broadcast schema. The Signal (📡) aggregates these across all stars.
 
-![Archive Pulse](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zbreeden/archive-model/main/archive/pulse_badge.json)
+## 🔗 Constellation Links
 
-<!-- SIGNAL:START
-id: 2025-09-04-archive-pulse-live
-ts_utc: 2025-09-04T16:45:00Z
-title: "Archive pulse wired to System Health"
-summary: >
-  The Archive now emits a beacon, a modules_index.json, and a Shields badge.
-  The Signal can harvest this as a broadcast item for the constellation feed.
-tags: [archive, pulse, system-health]
-links:
-  - label: "Modules index (JSON)"
-    url: "https://raw.githubusercontent.com/zbreeden/archive-model/main/archive/modules_index.json"
-  - label: "Beacon"
-    url: "https://raw.githubusercontent.com/zbreeden/archive-model/main/archive/signal_beacon.json"
-SIGNAL:END -->
+- **Hub**: [FourTwenty Analytics](https://github.com/zbreeden/FourTwentyAnalytics)
+- **Archive**: Glossary, tags, and canonical definitions
+- **Signal**: Cross-constellation broadcasting and telemetry
 
+---
 
-License: MIT
-
+*This star is part of the FourTwenty Analytics constellation - a modular analytics sandbox where each repository is a specialized "model" within an orbital system.*

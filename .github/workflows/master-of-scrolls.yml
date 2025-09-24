@@ -1,0 +1,25 @@
+name: Master of Scrolls
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run without committing/pushing changes"
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  collect-scrolls:
+    runs-on: ubuntu-latest
+    env:
+      HUB_PAT: ${{ secrets.HUB_PAT }}
+
+    steps:
+      - name: 🧭 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📜 Run aggregate-scripts.sh
+        run: |
+          chmod +x ./scripts/aggregate-scripts.sh
+          ./scripts/aggregate-scripts.sh ${{ inputs.dry_run }}

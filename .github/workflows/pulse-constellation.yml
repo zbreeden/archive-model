@@ -1,21 +1,8 @@
 name: Pulse Constellation
 
 on:
-  workflow_dispatch:
-    inputs:
-      dry_run:
-        description: "Run without committing/pushing changes"
-        required: false
-        type: boolean
-        default: false
-  push:
-    paths:
-      - "scripts/pulse-constellation.sh"
-      - "signals/**"
-      - ".github/workflows/pulse-constellation.yml"
- # schedule:
-    # 09:00 America/New_York ≈ 13:00 UTC (update if you want a different local time)
-    # cron: "0 13 * * *"
+  schedule:
+  - cron: "0 13 * * *" # 09:00 America/New_York ≈ 13:00 UTC
 
 permissions:
   contents: write

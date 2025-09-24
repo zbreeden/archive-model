@@ -1,8 +1,15 @@
 name: Pulse Constellation
 
 on:
-  schedule:
-  - cron: "0 13 * * *" # 09:00 America/New_York ≈ 13:00 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run without committing/pushing changes"
+        required: false
+        type: boolean
+        default: true
+  # schedule:
+  # - cron: "0 13 * * *" # 09:00 America/New_York ≈ 13:00 UTC
 
 permissions:
   contents: write

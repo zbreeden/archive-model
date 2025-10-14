@@ -1,0 +1,26 @@
+{
+  "id": "20251014T024851Z-weekly_update",
+  "ts_utc": "2025-10-14T02:48:51Z",
+  "module": "Archive Model",
+  "repo": "archive-model",
+  "title": "Vital Records Model",
+  "summary": "The Archive has accepted data from The Developer and created vital_records.pbix",
+  "rating": "high",
+  "origin": {
+    "name": "Archive Model",
+    "url": "https://zbreeden.github.io/archive-model/",
+    "emoji": "🫀"
+  },
+  "status": "cooled",
+  "links": {
+    "readme": "https://github.com/zbreeden/archive-model#readme",
+    "page": "https://zbreeden.github.io/archive-model/"
+  },
+  "payload": {
+    "module_key": "archive_model",
+    "broadcast_key": "weekly_update",
+    "tags": [
+      "model"
+    ]
+  }
+}

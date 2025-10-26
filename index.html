@@ -112,7 +112,7 @@
     // README renderer
     const readmeToggle = document.getElementById('readme-toggle');
     const readmeContainer = document.getElementById('readme-container');
-    async function loadTrainerReadme() {
+    async function loadArchiveReadme() {
       try {
         const resp = await fetch('./README.md');
         if (!resp.ok) throw new Error('README not available');
@@ -139,7 +139,7 @@
       readmeToggle.textContent = 'Hide README';
       readmeToggle.setAttribute('aria-expanded', 'true');
       if (!readmeContainer.dataset.loaded) {
-        await loadCoachReadme();
+        await loadArchiveReadme();
         readmeContainer.dataset.loaded = '1';
       }
     });

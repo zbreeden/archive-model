@@ -1,0 +1,29 @@
+{
+  "id": "20251026T200345Z-reset_update",
+  "ts_utc": "2025-10-26T20:03:45Z",
+  "module": "Archive Model",
+  "repo": "archive-model",
+  "title": "Reset Message Received",
+  "summary": "The Archive received a call from The Barycenter to reset.  The star has reset to funnel development stage.  Status remains developing.",
+  "rating": "critical",
+  "origin": {
+    "name": "Archive Model",
+    "url": "https://zbreeden.github.io/archive-model/",
+    "emoji": "🫀"
+  },
+  "status": "developing",
+  "links": {
+    "readme": "https://github.com/zbreeden/archive-model#readme",
+    "page": "https://zbreeden.github.io/archive-model/"
+  },
+  "payload": {
+    "orbit": "🪐",
+    "status": "🚧",
+    "notes": "USER SKILLS - Teardowns, Resets, Data Governance",
+    "module_key": "archive_model",
+    "broadcast_key": "reset_update",
+    "tags": [
+      "reset"
+    ]
+  }
+}

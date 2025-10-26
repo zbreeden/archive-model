@@ -1,0 +1,447 @@
+{
+  "generated_at": "2025-10-26T00:29:37Z",
+  "trainings": {
+    "walk_session": {
+      "id": "walk_session",
+      "title": "Cardio Walking Session",
+      "steps_total": 32,
+      "steps_completed": [],
+      "percent_complete": 21.3333,
+      "last_activity": "2025-10-25",
+      "notes": "A guided walking routine to enhance cardiovascular endurance.",
+      "steps": [
+        {
+          "id": "walk_3_mile",
+          "title": "3-mile walk",
+          "count": 13,
+          "status": "\ud83d\udd25",
+          "last_activity": "2025-10-24"
+        },
+        {
+          "id": "walk_1_mile",
+          "title": "1-mile walk",
+          "count": 8,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-25"
+        },
+        {
+          "id": "10k_steps_day",
+          "title": "10,000 steps in a day",
+          "count": 11,
+          "status": "\ud83d\udd25",
+          "last_activity": "2025-10-24"
+        }
+      ]
+    },
+    "upper_body_session": {
+      "id": "upper_body_session",
+      "title": "Upper Body Strength Session",
+      "steps_total": 38,
+      "steps_completed": [],
+      "percent_complete": 25.3333,
+      "last_activity": "2025-10-25",
+      "notes": "Strength routines focusing on upper body muscles.",
+      "steps": [
+        {
+          "id": "pushups_20",
+          "title": "20 push-ups",
+          "count": 8,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-25"
+        },
+        {
+          "id": "curls_20_15lbs",
+          "title": "20 bicep curls of 15 lbs",
+          "count": 9,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-24"
+        },
+        {
+          "id": "tricep_pushbacks_20_15lbs",
+          "title": "20 tricep pushbacks of 15 lbs",
+          "count": 5,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-24"
+        },
+        {
+          "id": "bent_over_flies_20_15lbs",
+          "title": "20 bent-over flies of 15 lbs",
+          "count": 5,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-25"
+        },
+        {
+          "id": "arnold_presses_20_15lbs",
+          "title": "20 Arnold Presses of 15 lbs",
+          "count": 5,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-25"
+        },
+        {
+          "id": "upright_rows_20_15lbs",
+          "title": "20 upright rows of 15 lbs",
+          "count": 6,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-24"
+        }
+      ]
+    },
+    "core_session": {
+      "id": "core_session",
+      "title": "Core Body Strength Session",
+      "steps_total": 34,
+      "steps_completed": [],
+      "percent_complete": 22.6667,
+      "last_activity": "2025-10-25",
+      "notes": "Exercises targeting core muscle groups for stability and strength.",
+      "steps": [
+        {
+          "id": "crunches_20",
+          "title": "20 crunches",
+          "count": 8,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-24"
+        },
+        {
+          "id": "side_plank_left_20s",
+          "title": "20 second side plank - left",
+          "count": 5,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-25"
+        },
+        {
+          "id": "side_plank_right_20s",
+          "title": "20 second side plank - right",
+          "count": 5,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-25"
+        },
+        {
+          "id": "plank_20s",
+          "title": "20 second plank",
+          "count": 6,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-25"
+        },
+        {
+          "id": "hip_raises_20",
+          "title": "20 hip raises",
+          "count": 4,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-20"
+        },
+        {
+          "id": "20_v_up_roll_ups",
+          "title": "20 V-Up-Roll-Ups",
+          "count": 2,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-20"
+        },
+        {
+          "id": "high_knees_100",
+          "title": "100 high knees",
+          "count": 3,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-23"
+        },
+        {
+          "id": "high_knee_twists_50",
+          "title": "50 high knee twists",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-22"
+        }
+      ]
+    },
+    "lower_body_session": {
+      "id": "lower_body_session",
+      "title": "Lower Body Strength Session",
+      "steps_total": 17,
+      "steps_completed": [],
+      "percent_complete": 11.3333,
+      "last_activity": "2025-10-24",
+      "notes": "Routines designed to strengthen lower body muscles.",
+      "steps": [
+        {
+          "id": "squats_20",
+          "title": "20 squats",
+          "count": 4,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-22"
+        },
+        {
+          "id": "glute_bridges_20",
+          "title": "20 glute bridges",
+          "count": 3,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-24"
+        },
+        {
+          "id": "alternate_leg_step_ups_20",
+          "title": "20 alternate leg step-ups",
+          "count": 4,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-22"
+        },
+        {
+          "id": "calf_raises_20",
+          "title": "20 calf raises",
+          "count": 3,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-24"
+        },
+        {
+          "id": "alternate_leg_lunges_20",
+          "title": "20 alternate leg lunges",
+          "count": 3,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-24"
+        }
+      ]
+    },
+    "caloric_limiting_session": {
+      "id": "caloric_limiting_session",
+      "title": "Caloric Limiting Session",
+      "steps_total": 16,
+      "steps_completed": [],
+      "percent_complete": 10.6667,
+      "last_activity": "2025-10-23",
+      "notes": "Managing daily caloric intake for weight control.",
+      "steps": [
+        {
+          "id": "load_max_2000",
+          "title": "2000 calorie day",
+          "count": 9,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-23"
+        },
+        {
+          "id": "output_min_450",
+          "title": "450 energy output",
+          "count": 7,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-23"
+        }
+      ]
+    },
+    "elevate_session": {
+      "id": "elevate_session",
+      "title": "Elevate Session",
+      "steps_total": 42,
+      "steps_completed": [],
+      "percent_complete": 28.0,
+      "last_activity": "2025-10-25",
+      "notes": "Elevate sessions managing mental memory, focus, and processing speed.",
+      "steps": [
+        {
+          "id": "elevate_spelling",
+          "title": "Spelling in Elevate",
+          "count": 2,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-21"
+        },
+        {
+          "id": "elevate_retention",
+          "title": "Retention in Elevate",
+          "count": 2,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-24"
+        },
+        {
+          "id": "elevate_tipping",
+          "title": "Tipping in Elevate",
+          "count": 2,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-22"
+        },
+        {
+          "id": "elevate_expression",
+          "title": "Expression in Elevate",
+          "count": 4,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-23"
+        },
+        {
+          "id": "elevate_synonyms",
+          "title": "Synonyms in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-11"
+        },
+        {
+          "id": "elevate_equivalence",
+          "title": "Equivalence in Elevate",
+          "count": 2,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-20"
+        },
+        {
+          "id": "elevate_percentages",
+          "title": "Percentages in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-13"
+        },
+        {
+          "id": "elevate_eloquence",
+          "title": "Eloquence in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-13"
+        },
+        {
+          "id": "elevate_name_recall",
+          "title": "Name Recall in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-13"
+        },
+        {
+          "id": "elevate_division",
+          "title": "Division in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-14"
+        },
+        {
+          "id": "elevate_attention",
+          "title": "Attention in Elevate",
+          "count": 2,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-19"
+        },
+        {
+          "id": "elevate_detail",
+          "title": "Detail in Elevate",
+          "count": 2,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-18"
+        },
+        {
+          "id": "elevate_agility",
+          "title": "Agility in Elevate",
+          "count": 2,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-19"
+        },
+        {
+          "id": "elevate_word_swap",
+          "title": "Word Swap in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-15"
+        },
+        {
+          "id": "elevate_brevity",
+          "title": "Brevity in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-15"
+        },
+        {
+          "id": "elevate_diction",
+          "title": "Diction in Elevate",
+          "count": 4,
+          "status": "\ud83c\udf3f",
+          "last_activity": "2025-10-24"
+        },
+        {
+          "id": "elevate_association",
+          "title": "Association in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-17"
+        },
+        {
+          "id": "elevate_transitions",
+          "title": "Transitions in Elevate",
+          "count": 3,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-25"
+        },
+        {
+          "id": "elevate_visualizations",
+          "title": "Visualizations in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-18"
+        },
+        {
+          "id": "elevate_inversion",
+          "title": "Inversion in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-20"
+        },
+        {
+          "id": "elevate_clarity",
+          "title": "Clarity in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-20"
+        },
+        {
+          "id": "elevate_processing",
+          "title": "Processing in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-21"
+        },
+        {
+          "id": "elevate_extraction",
+          "title": "Extraction in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-22"
+        },
+        {
+          "id": "elevate_estimation",
+          "title": "Estimation in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-23"
+        },
+        {
+          "id": "elevate_subtraction",
+          "title": "Subtraction in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-24"
+        },
+        {
+          "id": "elevate_word_parts",
+          "title": "Word Parts in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-25"
+        },
+        {
+          "id": "elevate_purchasing",
+          "title": "Purchasing in Elevate",
+          "count": 1,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-25"
+        }
+      ]
+    },
+    "headspace_session": {
+      "id": "headspace_session",
+      "title": "Headspace Session",
+      "steps_total": 2,
+      "steps_completed": [],
+      "percent_complete": 1.3333,
+      "last_activity": "2025-10-25",
+      "notes": "Headspace sessions managing mindfulness and meditation.",
+      "steps": [
+        {
+          "id": "headspace_15min",
+          "title": "15-minute guided meditation in Headspace",
+          "count": 2,
+          "status": "\ud83c\udf31",
+          "last_activity": "2025-10-25"
+        }
+      ]
+    }
+  },
+  "orphans": []
+}
